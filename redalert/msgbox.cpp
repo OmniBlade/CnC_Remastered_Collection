@@ -100,7 +100,9 @@ int WWMessageBox::Process(const char* msg, const char* b1txt, const char* b2txt,
         b3txt = NULL;
 
     // PG_TO_FIX
-    // Fancy_Text_Print(TXT_NONE, 0, 0, TBLACK, TBLACK, TPF_TEXT);
+#ifndef REMASTER_BUILD
+    Fancy_Text_Print(TXT_NONE, 0, 0, 0, TBLACK, TPF_TEXT);
+#endif
 
     /*
     **	Examine the optional button parameters. Fetch the width and starting
@@ -136,7 +138,9 @@ int WWMessageBox::Process(const char* msg, const char* b1txt, const char* b2txt,
     buffer[BUFFSIZE - 1] = 0;
     strncpy(buffer, msg, BUFFSIZE - 1);
     // PG_TO_FIX
-    // Fancy_Text_Print(TXT_NONE, 0, 0, TBLACK, TBLACK, TPF_TEXT);
+#ifndef REMASTER_BUILD
+    Fancy_Text_Print(TXT_NONE, 0, 0, 0, TBLACK, TPF_TEXT);
+#endif
     int width;
     int height;
     int lines = Format_Window_String(buffer, 255 * RESFACTOR, width, height);

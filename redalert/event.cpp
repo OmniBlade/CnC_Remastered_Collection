@@ -953,8 +953,14 @@ void EventClass::Execute(void)
                 break;
             }
             Scen.bLocalProposesDraw = true;
-            // PG Session.Messages.Add_Message( NULL, 0, TXT_WOL_DRAW_PROPOSED_LOCAL, PCOLOR_GOLD,
-            // TPF_6PT_GRAD|TPF_USE_GRAD_PAL|TPF_FULLSHADOW, Rule.MessageDelay * TICKS_PER_MINUTE );
+#ifndef REMASTER_BUILD
+            Session.Messages.Add_Message(NULL,
+                                         0,
+                                         TXT_WOL_DRAW_PROPOSED_LOCAL,
+                                         PCOLOR_GOLD,
+                                         TPF_6PT_GRAD | TPF_USE_GRAD_PAL | TPF_FULLSHADOW,
+                                         Rule.MessageDelay * TICKS_PER_MINUTE);
+#endif
         } else {
             if (Scen.bLocalProposesDraw) {
                 //	Both sides agree to draw. Game will end in a tie.
@@ -964,7 +970,9 @@ void EventClass::Execute(void)
             char szMessage[100];
             for (i = 0; i < Session.Players.Count(); i++) {
                 if (ID == Session.Players[i]->Player.ID) {
-                    // PG sprintf( szMessage, TXT_WOL_DRAW_PROPOSED_OTHER, Session.Players[i]->Name );
+#ifndef REMASTER_BUILD
+                    sprintf(szMessage, TXT_WOL_DRAW_PROPOSED_OTHER, Session.Players[i]->Name);
+#endif
                     break;
                 }
             }
@@ -982,13 +990,21 @@ void EventClass::Execute(void)
     case RETRACT_DRAW:
         if (ID == PlayerPtr->ID) {
             Scen.bLocalProposesDraw = false;
-            // PG Session.Messages.Add_Message( NULL, 0, TXT_WOL_DRAW_RETRACTED_LOCAL, PCOLOR_GOLD,
-            // TPF_6PT_GRAD|TPF_USE_GRAD_PAL|TPF_FULLSHADOW, Rule.MessageDelay * TICKS_PER_MINUTE );
+#ifndef REMASTER_BUILD
+            Session.Messages.Add_Message(NULL,
+                                         0,
+                                         TXT_WOL_DRAW_RETRACTED_LOCAL,
+                                         PCOLOR_GOLD,
+                                         TPF_6PT_GRAD | TPF_USE_GRAD_PAL | TPF_FULLSHADOW,
+                                         Rule.MessageDelay * TICKS_PER_MINUTE);
+#endif
         } else {
             char szMessage[100];
             for (i = 0; i < Session.Players.Count(); i++) {
                 if (ID == Session.Players[i]->Player.ID) {
-                    // PG sprintf( szMessage, TXT_WOL_DRAW_RETRACTED_OTHER, Session.Players[i]->Name );
+#ifndef REMASTER_BUILD
+                    sprintf(szMessage, TXT_WOL_DRAW_RETRACTED_OTHER, Session.Players[i]->Name);
+#endif
                     break;
                 }
             }
