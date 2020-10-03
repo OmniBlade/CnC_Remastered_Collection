@@ -35,6 +35,8 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
+#include <stdint.h>
+
 /*
 Map(screen) class heirarchy.
 
@@ -530,7 +532,7 @@ long Buffer_Frame_To_Page(int x, int y, int w, int h, void* Buffer, GraphicViewP
 **	KEYFRAME.CPP
 */
 int Get_Last_Frame_Length(void);
-unsigned long Build_Frame(void const* dataptr, unsigned short framenumber, void* buffptr);
+uintptr_t Build_Frame(void const* dataptr, unsigned short framenumber, void* buffptr);
 unsigned short Get_Build_Frame_Count(void const* dataptr);
 unsigned short Get_Build_Frame_X(void const* dataptr);
 unsigned short Get_Build_Frame_Y(void const* dataptr);

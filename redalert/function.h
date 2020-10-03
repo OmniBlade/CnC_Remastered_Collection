@@ -35,6 +35,8 @@
 #ifndef FUNCTION_H
 #define FUNCTION_H
 
+#include <stdint.h>
+
 /*
 **	!!!DEFINE!!!  "NDEBUG" if the assertion code is to be !!!REMOVED!!! from the project.
 */
@@ -724,7 +726,7 @@ long __cdecl Buffer_Frame_To_Page(int x, int y, int w, int h, void* Buffer, Grap
 /*
 **	KEYFRAME.CPP
 */
-unsigned long Build_Frame(void const* dataptr, unsigned short framenumber, void* buffptr);
+uintptr_t Build_Frame(void const* dataptr, unsigned short framenumber, void* buffptr);
 unsigned short Get_Build_Frame_Count(void const* dataptr);
 unsigned short Get_Build_Frame_X(void const* dataptr);
 unsigned short Get_Build_Frame_Y(void const* dataptr);
