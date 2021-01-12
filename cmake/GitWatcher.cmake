@@ -194,7 +194,7 @@ function(GetGitState _working_dir)
         set(ENV{GIT_HEAD_SHORT_SHA1} ${output})
     endif()
 
-    RunGitCommand(rev-list --count ${object})
+    RunGitCommand(rev-list --count HEAD ${object})
     if(exit_code EQUAL 0)
         set(ENV{GIT_REV_LIST_COUNT} ${output})
     endif()
