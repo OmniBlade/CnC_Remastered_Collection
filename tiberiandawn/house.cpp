@@ -106,6 +106,7 @@
 #include "defines.h"
 #include "common/irandom.h"
 #include "ccini.h"
+#include "common/fixed.h"
 
 /***********************************************************************************************
  * HouseClass::Validate -- validates house pointer															  *
@@ -488,7 +489,7 @@ HouseClass::HouseClass(HousesType house)
     memset(IQuantity, '\0', sizeof(IQuantity));
     memset(AQuantity, '\0', sizeof(AQuantity));
 
-    Attack = 0;
+    Attack = Rule.AttackDelay * Random_Pick(TICKS_PER_MINUTE / 2, TICKS_PER_MINUTE * 2);
 
     Enemy = HOUSE_NONE;
 
@@ -4643,15 +4644,14 @@ void HouseClass::Init_Data(PlayerColorType color, HousesType house, int credits)
  * HISTORY:                                                                                    *
  *   07/22/1995 JLB : Created.                                                                 *
  *=============================================================================================*/
-int HouseClass::Power_Fraction(void) const
+fixed HouseClass::Power_Fraction(void) const
 {
     Validate();
+    if (Power >= Drain || Drain == 0)
+        return (1);
+
     if (Power) {
-        if (Drain) {
-            return (Cardinal_To_Fixed(Drain, Power));
-        } else {
-            return (0x0100);
-        }
+        return (fixed(Power, Drain));
     }
     return (0);
 }
@@ -4955,27 +4955,6 @@ inline bool Percent_Chance(int percent)
 #define INFANTRY_RENOVATOR INFANTRY_E7
 
 TFixedIHeapClass<HouseClass::BuildChoiceClass> HouseClass::BuildChoice;
-
-/*
-** This is a replacement for the RA 'fixed' round up function. It takes the equivalent of a 'fixed' value, but returns
-*just the integer part
-** ST - 7/26/2019 11:13AM
-*/
-unsigned short Round_Up(unsigned short val)
-{
-    if ((val & 0xff) == 0) {
-        return val;
-    }
-    val &= 0xff00;
-    val += 0x0100;
-    val >>= 8;
-    return val;
-}
-
-unsigned short fixed(int val)
-{
-    return (unsigned short)val;
-}
 
 /***********************************************************************************************
  * HouseClass::Suggest_New_Building -- Examines the situation and suggests a building.         *
