@@ -121,6 +121,14 @@ RulesClass::RulesClass(void)
     , IsComputerParanoid(true)
     , IsCompEasyBonus(false)
     , IsFineDifficulty(false)
+    , IsMCVDeploy(false)
+    , IsSeparate(false)
+    , IsTreeTarget(false)
+    , IsTGrowth(true)
+    , IsTSpread(true)
+    , IsNamed(false)
+    , IsSmartDefense(false)
+    , IsScatter(false)
     , AllowSuperWeapons(true)
 {
 #ifndef REMASTER_BUILD
@@ -251,6 +259,7 @@ static void Difficulty_Put(CCINIClass& ini, DifficultyClass& diff, char const* s
  *=============================================================================================*/
 bool RulesClass::Process(CCINIClass& ini)
 {
+    General(ini);
     AI(ini);
     IQ(ini);
     Difficulty(ini);
@@ -274,9 +283,80 @@ bool RulesClass::Process(CCINIClass& ini)
  *=============================================================================================*/
 bool RulesClass::Export(CCINIClass& ini)
 {
+    Export_General(ini);
     Export_AI(ini);
     Export_IQ(ini);
     Export_Difficulty(ini);
+
+    return (true);
+}
+
+/***********************************************************************************************
+ * RulesClass::General -- Process the general main game rules.                                 *
+ *                                                                                             *
+ *    This fetches the control constants uses for regular game processing. Any game behavior   *
+ *    controlling values that don't properly fit in any of the other catagories will be        *
+ *    stored here.                                                                             *
+ *                                                                                             *
+ * INPUT:   ini   -- Reference to the database to fetch the values from.                       *
+ *                                                                                             *
+ * OUTPUT:  bool; Was the general section found and processed?                                 *
+ *                                                                                             *
+ * WARNINGS:   none                                                                            *
+ *                                                                                             *
+ * HISTORY:                                                                                    *
+ *   08/08/1996 JLB : Created.                                                                 *
+ *=============================================================================================*/
+bool RulesClass::General(CCINIClass& ini)
+{
+    static char const* const GENERAL = "General";
+
+    if (ini.Is_Present(GENERAL)) {
+        IsFineDifficulty = ini.Get_Bool(GENERAL, "FineDiffControl", IsFineDifficulty);
+        IsScatter = ini.Get_Bool(GENERAL, "PlayerScatter", IsScatter);
+        IsSmartDefense = ini.Get_Bool(GENERAL, "PlayerReturnFire", IsSmartDefense);
+        IsNamed = ini.Get_Bool(GENERAL, "NamedCivilians", IsNamed);
+        IsTGrowth = ini.Get_Bool(GENERAL, "TiberiumGrows", IsTGrowth);
+        IsTSpread = ini.Get_Bool(GENERAL, "TiberiumSpreads", IsTSpread);
+        IsTreeTarget = ini.Get_Bool(GENERAL, "TreeTargeting", IsTreeTarget);
+        IsSeparate = ini.Get_Bool(GENERAL, "SeparateAircraft", IsSeparate);
+        IsMCVDeploy = ini.Get_Bool(GENERAL, "MCVUndeploy", IsMCVDeploy);
+
+        return (true);
+    }
+
+    return (false);
+}
+
+/***********************************************************************************************
+ * RulesClass::General -- Process the general main game rules.                                 *
+ *                                                                                             *
+ *    This fetches the control constants uses for regular game processing. Any game behavior   *
+ *    controlling values that don't properly fit in any of the other catagories will be        *
+ *    stored here.                                                                             *
+ *                                                                                             *
+ * INPUT:   ini   -- Reference to the database to fetch the values from.                       *
+ *                                                                                             *
+ * OUTPUT:  bool; Was the general section found and processed?                                 *
+ *                                                                                             *
+ * WARNINGS:   none                                                                            *
+ *                                                                                             *
+ * HISTORY:                                                                                    *
+ *   08/08/1996 JLB : Created.                                                                 *
+ *=============================================================================================*/
+bool RulesClass::Export_General(CCINIClass& ini)
+{
+    static char const GENERAL[] = "General";
+
+    ini.Put_Bool(GENERAL, "FineDiffControl", IsFineDifficulty);
+    ini.Put_Bool(GENERAL, "PlayerScatter", IsScatter);
+    ini.Put_Bool(GENERAL, "PlayerReturnFire", IsSmartDefense);
+    ini.Put_Bool(GENERAL, "NamedCivilians", IsNamed);
+    ini.Put_Bool(GENERAL, "TiberiumGrows", IsTGrowth);
+    ini.Put_Bool(GENERAL, "TiberiumSpreads", IsTSpread);
+    ini.Put_Bool(GENERAL, "TreeTargeting", IsTreeTarget);
+    ini.Put_Bool(GENERAL, "SeparateAircraft", IsSeparate);
+    ini.Put_Bool(GENERAL, "MCVUndeploy", IsMCVDeploy);
 
     return (true);
 }
@@ -316,8 +396,8 @@ bool RulesClass::AI(CCINIClass& ini)
         DefenseLimit = ini.Get_Int(AI, "DefenseLimit", DefenseLimit);
         AARatio = ini.Get_Fixed(AI, "AARatio", AARatio);
         AALimit = ini.Get_Int(AI, "AALimit", AALimit);
-        TeslaRatio = ini.Get_Fixed(AI, "TeslaRatio", TeslaRatio);
-        TeslaLimit = ini.Get_Int(AI, "TeslaLimit", TeslaLimit);
+        TeslaRatio = ini.Get_Fixed(AI, "ObeliskRatio", TeslaRatio);
+        TeslaLimit = ini.Get_Int(AI, "ObeliskLimit", TeslaLimit);
         HelipadRatio = ini.Get_Fixed(AI, "HelipadRatio", HelipadRatio);
         HelipadLimit = ini.Get_Int(AI, "HelipadLimit", HelipadLimit);
         AirstripRatio = ini.Get_Fixed(AI, "AirstripRatio", AirstripRatio);
@@ -364,8 +444,8 @@ bool RulesClass::Export_AI(CCINIClass& ini)
     ini.Put_Int(AI, "DefenseLimit", DefenseLimit);
     ini.Put_Fixed(AI, "AARatio", AARatio);
     ini.Put_Int(AI, "AALimit", AALimit);
-    ini.Put_Fixed(AI, "TeslaRatio", TeslaRatio);
-    ini.Put_Int(AI, "TeslaLimit", TeslaLimit);
+    ini.Put_Fixed(AI, "ObeliskRatio", TeslaRatio);
+    ini.Put_Int(AI, "ObeliskLimit", TeslaLimit);
     ini.Put_Fixed(AI, "HelipadRatio", HelipadRatio);
     ini.Put_Int(AI, "HelipadLimit", HelipadLimit);
     ini.Put_Fixed(AI, "AirstripRatio", AirstripRatio);
@@ -495,4 +575,24 @@ bool RulesClass::Export_Difficulty(CCINIClass& ini)
     Difficulty_Put(ini, Diff[DIFF_HARD], "Difficult");
 #endif
     return (true);
+}
+
+/***********************************************************************************************
+ * Is_MCV_Deploy -- Check if MCV can be deployed.                                              *
+ *                                                                                             *
+ *    This routine is used to check if the Construction Yard can revert back into an MCV.      *
+ *    It allows the special variables to override anything set by the rules.                   *
+ *                                                                                             *
+ * INPUT:   none                                                                               *
+ *                                                                                             *
+ * OUTPUT:  bool; Can the Construction Yard revert back into an MCV.                           *
+ *                                                                                             *
+ * WARNINGS:   none                                                                            *
+ *                                                                                             *
+ * HISTORY:                                                                                    *
+ *   10/24/2019 SKY : Created.                                                                 *
+ *=============================================================================================*/
+bool Is_MCV_Deploy()
+{
+    return Special.UseMCVDeploy ? Special.IsMCVDeploy : Rule.IsMCVDeploy;
 }
